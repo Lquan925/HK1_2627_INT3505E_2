@@ -1,0 +1,282 @@
+openapi: 3.0.3
+info:
+  title: Tasks API
+  version: 1.0.0
+  description: Quản lý task nội bộ — bao gồm các thuộc tính title, status, priority, dueDate, assigneeId.
+servers:
+  - url: http://localhost:5000/v1
+    description: Local development server
+security:
+  - bearerAuth: []
+tags:
+  - name: tasks
+    description: Các thao tác liên quan đến quản lý công việc (Tasks)
+
+paths:
+  /tasks:
+    get:
+      tags:
+        - tasks
+      summary: Lấy danh sách công việc
+      operationId: listTasks
+      parameters:
+        - name: page
+          in: query
+          description: Số trang
+          schema:
+            type: integer
+            default: 1
+        - name: limit
+          in: query
+          description: Số lượng kết quả trên một trang
+          schema:
+            type: integer
+            default: 10
+        - name: status
+          in: query
+          description: Lọc theo trạng thái công việc
+          schema:
+            type: string
+            enum: [todo, in_progress, completed, cancelled]
+      responses:
+        '200':
+          description: Trả về danh sách công việc thành công
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TaskPage'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+    post:
+      tags:
+        - tasks
+      summary: Tạo công việc mới
+      operationId: createTask
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateTaskInput'
+      responses:
+        '201':
+          description: Tạo task thành công
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Task'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '422':
+          $ref: '#/components/responses/ValidationError'
+
+  /tasks/{id}:
+    get:
+      tags:
+        - tasks
+      summary: Lấy thông tin chi tiết một công việc
+      operationId: getTaskById
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID của công việc
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Lấy thông tin công việc thành công
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Task'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+    patch:
+      tags:
+        - tasks
+      summary: Cập nhật một phần thông tin công việc
+      operationId: updateTask
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID của công việc
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateTaskInput'
+      responses:
+        '200':
+          description: Cập nhật thành công
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Task'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '422':
+          $ref: '#/components/responses/ValidationError'
+
+    delete:
+      tags:
+        - tasks
+      summary: Xóa công việc
+      operationId: deleteTask
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID của công việc
+          schema:
+            type: string
+      responses:
+        '204':
+          description: Xóa thành công (No Content)
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  schemas:
+    Task:
+      type: object
+      required:
+        - id
+        - title
+        - status
+        - priority
+        - createdAt
+      properties:
+        id:
+          type: string
+          example: "task-123"
+        title:
+          type: string
+          example: "Soạn thảo tài liệu API"
+        status:
+          type: string
+          enum: [todo, in_progress, completed, cancelled]
+          example: "in_progress"
+        priority:
+          type: string
+          enum: [low, medium, high]
+          example: "high"
+        dueDate:
+          type: string
+          format: date-time
+          example: "2026-10-31T23:59:59Z"
+        assigneeId:
+          type: string
+          nullable: true
+          example: "user-456"
+        createdAt:
+          type: string
+          format: date-time
+          example: "2026-10-14T08:00:00Z"
+
+    CreateTaskInput:
+      type: object
+      required:
+        - title
+      properties:
+        title:
+          type: string
+          example: "Soạn thảo tài liệu API"
+        status:
+          type: string
+          enum: [todo, in_progress, completed, cancelled]
+          default: "todo"
+        priority:
+          type: string
+          enum: [low, medium, high]
+          default: "medium"
+        dueDate:
+          type: string
+          format: date-time
+          example: "2026-10-31T23:59:59Z"
+        assigneeId:
+          type: string
+          example: "user-456"
+
+    UpdateTaskInput:
+      type: object
+      properties:
+        title:
+          type: string
+        status:
+          type: string
+          enum: [todo, in_progress, completed, cancelled]
+        priority:
+          type: string
+          enum: [low, medium, high]
+        dueDate:
+          type: string
+          format: date-time
+        assigneeId:
+          type: string
+          nullable: true
+
+    TaskPage:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/Task'
+        total:
+          type: integer
+          example: 100
+        page:
+          type: integer
+          example: 1
+        limit:
+          type: integer
+          example: 10
+
+    ErrorResponse:
+      type: object
+      properties:
+        code:
+          type: string
+          example: "UNAUTHORIZED"
+        message:
+          type: string
+          example: "Token không hợp lệ hoặc đã hết hạn"
+
+  responses:
+    Unauthorized:
+      description: Chưa xác thực (Unauthorized)
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    NotFound:
+      description: Không tìm thấy tài nguyên (Not Found)
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    ValidationError:
+      description: Dữ liệu đầu vào không hợp lệ (Validation Error)
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
