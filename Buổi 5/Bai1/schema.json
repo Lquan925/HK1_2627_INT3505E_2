@@ -1,0 +1,237 @@
+{
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "title": "HotelBookingSystemSchemas",
+    "description": "JSON Schemas for API Resources derived from the provided ERD",
+    "type": "object",
+    "properties": {
+        "User": {
+            "type": "object",
+            "required": [
+                "id",
+                "name",
+                "email",
+                "role"
+            ],
+            "properties": {
+                "id": {
+                    "type": "string",
+                    "pattern": "^user_[a-z0-9]+$"
+                },
+                "name": {
+                    "type": "string",
+                    "minLength": 2,
+                    "maxLength": 100
+                },
+                "email": {
+                    "type": "string",
+                    "format": "email"
+                },
+                "role": {
+                    "type": "string",
+                    "enum": [
+                        "Customer",
+                        "Owner",
+                        "Admin"
+                    ]
+                }
+            }
+        },
+        "Hotel": {
+            "type": "object",
+            "required": [
+                "id",
+                "ownerId",
+                "address"
+            ],
+            "properties": {
+                "id": {
+                    "type": "string",
+                    "pattern": "^hotel_[a-z0-9]+$"
+                },
+                "ownerId": {
+                    "type": "string",
+                    "pattern": "^user_[a-z0-9]+$",
+                    "description": "Tham chiếu từ mối quan hệ SỞ HỮU với NGƯỜI DÙNG"
+                },
+                "address": {
+                    "type": "object",
+                    "properties": {
+                        "street": {
+                            "type": "string"
+                        },
+                        "city": {
+                            "type": "string"
+                        },
+                        "country": {
+                            "type": "string"
+                        }
+                    },
+                    "required": [
+                        "street",
+                        "city",
+                        "country"
+                    ]
+                }
+            }
+        },
+        "Room": {
+            "type": "object",
+            "required": [
+                "id",
+                "roomType",
+                "roomNumber",
+                "price",
+                "capacity",
+                "status"
+            ],
+            "properties": {
+                "id": {
+                    "type": "string",
+                    "pattern": "^room_[a-z0-9]+$"
+                },
+                "roomType": {
+                    "type": "string"
+                },
+                "roomNumber": {
+                    "type": "string"
+                },
+                "price": {
+                    "type": "object",
+                    "required": [
+                        "amount",
+                        "currency"
+                    ],
+                    "properties": {
+                        "amount": {
+                            "type": "integer",
+                            "minimum": 0
+                        },
+                        "currency": {
+                            "enum": [
+                                "VND",
+                                "USD"
+                            ]
+                        }
+                    }
+                },
+                "capacity": {
+                    "type": "integer",
+                    "minimum": 1
+                },
+                "status": {
+                    "type": "string",
+                    "enum": [
+                        "Available",
+                        "Occupied",
+                        "Maintenance"
+                    ]
+                }
+            }
+        },
+        "Booking": {
+            "type": "object",
+            "required": [
+                "id",
+                "userId",
+                "roomId",
+                "bookingDate",
+                "totalAmount",
+                "status"
+            ],
+            "properties": {
+                "id": {
+                    "type": "string",
+                    "pattern": "^booking_[a-z0-9]+$"
+                },
+                "userId": {
+                    "type": "string",
+                    "pattern": "^user_[a-z0-9]+$",
+                    "description": "Tham chiếu từ mối quan hệ ĐẶT PHÒNG với NGƯỜI DÙNG"
+                },
+                "roomId": {
+                    "type": "string",
+                    "pattern": "^room_[a-z0-9]+$",
+                    "description": "Tham chiếu từ mối quan hệ GỒM với PHÒNG"
+                },
+                "bookingDate": {
+                    "type": "string",
+                    "format": "date-time"
+                },
+                "totalAmount": {
+                    "type": "object",
+                    "required": [
+                        "amount",
+                        "currency"
+                    ],
+                    "properties": {
+                        "amount": {
+                            "type": "integer",
+                            "minimum": 0
+                        },
+                        "currency": {
+                            "enum": [
+                                "VND",
+                                "USD"
+                            ]
+                        }
+                    }
+                },
+                "status": {
+                    "type": "string",
+                    "enum": [
+                        "Pending",
+                        "Confirmed",
+                        "Cancelled"
+                    ]
+                }
+            }
+        },
+        "Payment": {
+            "type": "object",
+            "required": [
+                "id",
+                "bookingId",
+                "totalAmount",
+                "status"
+            ],
+            "properties": {
+                "id": {
+                    "type": "string",
+                    "pattern": "^payment_[a-z0-9]+$"
+                },
+                "bookingId": {
+                    "type": "string",
+                    "pattern": "^booking_[a-z0-9]+$",
+                    "description": "Tham chiếu từ mối quan hệ GIAO DỊCH với ĐƠN ĐẶT PHÒNG"
+                },
+                "totalAmount": {
+                    "type": "object",
+                    "required": [
+                        "amount",
+                        "currency"
+                    ],
+                    "properties": {
+                        "amount": {
+                            "type": "integer",
+                            "minimum": 0
+                        },
+                        "currency": {
+                            "enum": [
+                                "VND",
+                                "USD"
+                            ]
+                        }
+                    }
+                },
+                "status": {
+                    "type": "string",
+                    "enum": [
+                        "Unpaid",
+                        "Paid",
+                        "Failed"
+                    ]
+                }
+            }
+        }
+    }
+}
