@@ -2,15 +2,24 @@ openapi: 3.0.3
 info:
   title: Books API — Lab 08
   version: 1.0.0
+  contact:
+    name: Books API Lab Team
   description: |
-    Educational API. LAB 2: three *intentional* contract defects remain.
+    Educational Books API for API testing exercises.
     The application is the reference for intended behavior.
 servers:
   - url: http://localhost:5000
+tags:
+  - name: Health
+    description: Service health checks.
+  - name: Books
+    description: Book management operations.
 paths:
   /health:
     get:
       operationId: healthCheck
+      description: Check whether the service is ready.
+      tags: [Health]
       responses:
         '200':
           description: Service is ready
@@ -22,7 +31,9 @@ paths:
                   status: {type: string}
   /books:
     get:
-      # LAB 2 intentional issue 1: operationId is missing.
+      operationId: listBooks
+      description: List books with optional author and year filters and pagination.
+      tags: [Books]
       parameters:
         - in: query
           name: author
@@ -43,6 +54,8 @@ paths:
                 items: {$ref: '#/components/schemas/Book'}
     post:
       operationId: createBook
+      description: Create a book from validated input.
+      tags: [Books]
       requestBody:
         required: true
         content:
@@ -64,6 +77,8 @@ paths:
         schema: {type: integer, minimum: 1}
     get:
       operationId: getBook
+      description: Get a book by its ID.
+      tags: [Books]
       responses:
         '200':
           description: Book found
@@ -73,6 +88,8 @@ paths:
         '404': {$ref: '#/components/responses/NotFound'}
     put:
       operationId: updateBook
+      description: Replace a book by its ID.
+      tags: [Books]
       requestBody:
         required: true
         content:
@@ -88,13 +105,11 @@ paths:
         '404': {$ref: '#/components/responses/NotFound'}
     delete:
       operationId: deleteBook
+      description: Delete a book by its ID without returning a response body.
+      tags: [Books]
       responses:
         '204':
           description: Deleted (response has no body)
-          # LAB 2 intentional issue 2: 204 incorrectly declares a body.
-          content:
-            application/json:
-              schema: {type: object}
         '404': {$ref: '#/components/responses/NotFound'}
 components:
   schemas:
@@ -106,8 +121,7 @@ components:
         id: {type: integer, minimum: 1}
         title: {type: string, minLength: 1, maxLength: 200}
         author: {type: string, minLength: 1, maxLength: 200}
-        # LAB 2 intentional issue 3: actual Book.year is integer/null.
-        year: {type: string, nullable: true}
+        year: {type: integer, nullable: true}
         isbn: {type: string, pattern: '^\d{13}$', nullable: true}
     BookInput:
       type: object
