@@ -22,7 +22,7 @@ rules:
         values: [integer]
 
   response-200-nonempty-schema:
-    description: Response 200 must have a nonempty JSON schema.
+    description: Response 200 must define object fields (or array item fields).
     severity: error
     given: "$.paths[*][*].responses['200']"
     then:
@@ -31,4 +31,17 @@ rules:
       functionOptions:
         schema:
           type: object
-          minProperties: 1
+          anyOf:
+            - required: [type, properties]
+              properties:
+                type: {const: object}
+                properties: {type: object, minProperties: 1}
+            - required: [type, items]
+              properties:
+                type: {const: array}
+                items:
+                  type: object
+                  required: [type, properties]
+                  properties:
+                    type: {const: object}
+                    properties: {type: object, minProperties: 1}
