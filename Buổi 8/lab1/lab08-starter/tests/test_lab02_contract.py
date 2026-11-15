@@ -41,6 +41,14 @@ def test_book_crud_responses_match_contract(client, book_validator):
     book_validator.validate(books[0])
 
     updated = client.put(f"/books/{book_id}", json={
+        "title": "Updated", "author": "Author", "year": 2024,
+    })
+    assert updated.status_code == 200
+    assert updated.is_json
+    book_validator.validate(updated.get_json())
+    assert updated.get_json()["year"] == 2024
+
+    updated = client.put(f"/books/{book_id}", json={
         "title": "Updated", "author": "Author",
     })
     assert updated.status_code == 200
