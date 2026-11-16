@@ -1,192 +1,259 @@
 {
-  "info": {
-    "name": "Books API — Lab08 Starter",
-    "description": "Lab 3: add error-cases/ folder with POST missing title and GET missing id. Collection currently contains happy paths only.",
-    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
-  },
-  "item": [
-    {
-      "name": "books",
-      "item": [
-        {
-          "name": "GET /books — initial list",
-          "request": {
-            "method": "GET",
-            "header": [],
-            "url": {
-              "raw": "{{base_url}}/books",
-              "host": [
-                "{{base_url}}"
-              ],
-              "path": [
-                "books"
-              ]
-            }
-          },
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "type": "text/javascript",
-                "exec": [
-                  "pm.test(\"200 OK\", () => pm.response.to.have.status(200));",
-                  "pm.test(\"body is array\", () => pm.expect(pm.response.json()).to.be.an(\"array\"));"
-                ]
-              }
-            }
-          ]
-        },
-        {
-          "name": "POST /books — create",
-          "request": {
-            "method": "POST",
-            "header": [
-              {
-                "key": "Content-Type",
-                "value": "application/json"
-              }
-            ],
-            "url": {
-              "raw": "{{base_url}}/books",
-              "host": [
-                "{{base_url}}"
-              ],
-              "path": [
-                "books"
-              ]
-            },
-            "body": {
-              "mode": "raw",
-              "raw": "{\"title\": \"DDIA\", \"author\": \"Kleppmann\", \"year\": 2017}",
-              "options": {
-                "raw": {
-                  "language": "json"
-                }
-              }
-            }
-          },
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "type": "text/javascript",
-                "exec": [
-                  "pm.test(\"201 Created\", () => pm.response.to.have.status(201));",
-                  "pm.test(\"positive id\", () => pm.expect(pm.response.json().id).to.be.above(0));",
-                  "if (pm.response.code === 201) pm.collectionVariables.set(\"book_id\", pm.response.json().id);"
-                ]
-              }
-            }
-          ]
-        },
-        {
-          "name": "GET /books/{id} — read",
-          "request": {
-            "method": "GET",
-            "header": [],
-            "url": {
-              "raw": "{{base_url}}/books/{{book_id}}",
-              "host": [
-                "{{base_url}}"
-              ],
-              "path": [
-                "books",
-                "{{book_id}}"
-              ]
-            }
-          },
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "type": "text/javascript",
-                "exec": [
-                  "pm.test(\"200 OK\", () => pm.response.to.have.status(200));",
-                  "pm.test(\"expected fields\", () => pm.expect(pm.response.json()).to.have.all.keys(\"id\", \"title\", \"author\", \"year\", \"isbn\"));"
-                ]
-              }
-            }
-          ]
-        },
-        {
-          "name": "PUT /books/{id} — replace",
-          "request": {
-            "method": "PUT",
-            "header": [
-              {
-                "key": "Content-Type",
-                "value": "application/json"
-              }
-            ],
-            "url": {
-              "raw": "{{base_url}}/books/{{book_id}}",
-              "host": [
-                "{{base_url}}"
-              ],
-              "path": [
-                "books",
-                "{{book_id}}"
-              ]
-            },
-            "body": {
-              "mode": "raw",
-              "raw": "{\"title\": \"DDIA revised\", \"author\": \"Kleppmann\", \"year\": 2017}",
-              "options": {
-                "raw": {
-                  "language": "json"
-                }
-              }
-            }
-          },
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "type": "text/javascript",
-                "exec": [
-                  "pm.test(\"200 OK\", () => pm.response.to.have.status(200));",
-                  "pm.test(\"updated title\", () => pm.expect(pm.response.json().title).to.eql(\"DDIA revised\"));"
-                ]
-              }
-            }
-          ]
-        },
-        {
-          "name": "DELETE /books/{id} — delete",
-          "request": {
-            "method": "DELETE",
-            "header": [],
-            "url": {
-              "raw": "{{base_url}}/books/{{book_id}}",
-              "host": [
-                "{{base_url}}"
-              ],
-              "path": [
-                "books",
-                "{{book_id}}"
-              ]
-            }
-          },
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "type": "text/javascript",
-                "exec": [
-                  "pm.test(\"204 No Content\", () => pm.response.to.have.status(204));",
-                  "pm.test(\"empty body\", () => pm.expect(pm.response.text()).to.eql(\"\"));"
-                ]
-              }
-            }
-          ]
-        }
-      ]
-    }
-  ],
-  "variable": [
-    {
-      "key": "book_id",
-      "value": ""
-    }
-  ]
+    "info":  {
+                 "name":  "Books API — Lab08 Starter",
+                 "description":  "Lab 3: add error-cases/ folder with POST missing title and GET missing id. Collection currently contains happy paths only.",
+                 "schema":  "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+             },
+    "item":  [
+                 {
+                     "name":  "books",
+                     "item":  [
+                                  {
+                                      "name":  "GET /books — initial list",
+                                      "request":  {
+                                                      "method":  "GET",
+                                                      "header":  [
+
+                                                                 ],
+                                                      "url":  {
+                                                                  "raw":  "{{base_url}}/books",
+                                                                  "host":  [
+                                                                               "{{base_url}}"
+                                                                           ],
+                                                                  "path":  [
+                                                                               "books"
+                                                                           ]
+                                                              }
+                                                  },
+                                      "event":  [
+                                                    {
+                                                        "listen":  "test",
+                                                        "script":  {
+                                                                       "type":  "text/javascript",
+                                                                       "exec":  [
+                                                                                    "pm.test(\"200 OK\", () =\u003e pm.response.to.have.status(200));",
+                                                                                    "pm.test(\"body is array\", () =\u003e pm.expect(pm.response.json()).to.be.an(\"array\"));"
+                                                                                ]
+                                                                   }
+                                                    }
+                                                ]
+                                  },
+                                  {
+                                      "name":  "POST /books — create",
+                                      "request":  {
+                                                      "method":  "POST",
+                                                      "header":  [
+                                                                     {
+                                                                         "key":  "Content-Type",
+                                                                         "value":  "application/json"
+                                                                     }
+                                                                 ],
+                                                      "url":  {
+                                                                  "raw":  "{{base_url}}/books",
+                                                                  "host":  [
+                                                                               "{{base_url}}"
+                                                                           ],
+                                                                  "path":  [
+                                                                               "books"
+                                                                           ]
+                                                              },
+                                                      "body":  {
+                                                                   "mode":  "raw",
+                                                                   "raw":  "{\"title\": \"DDIA\", \"author\": \"Kleppmann\", \"year\": 2017}",
+                                                                   "options":  {
+                                                                                   "raw":  {
+                                                                                               "language":  "json"
+                                                                                           }
+                                                                               }
+                                                               }
+                                                  },
+                                      "event":  [
+                                                    {
+                                                        "listen":  "test",
+                                                        "script":  {
+                                                                       "type":  "text/javascript",
+                                                                       "exec":  [
+                                                                                    "pm.test(\"201 Created\", () =\u003e pm.response.to.have.status(201));",
+                                                                                    "pm.test(\"positive id\", () =\u003e pm.expect(pm.response.json().id).to.be.above(0));",
+                                                                                    "if (pm.response.code === 201) pm.collectionVariables.set(\"book_id\", pm.response.json().id);"
+                                                                                ]
+                                                                   }
+                                                    }
+                                                ]
+                                  },
+                                  {
+                                      "name":  "GET /books/{id} — read",
+                                      "request":  {
+                                                      "method":  "GET",
+                                                      "header":  [
+
+                                                                 ],
+                                                      "url":  {
+                                                                  "raw":  "{{base_url}}/books/{{book_id}}",
+                                                                  "host":  [
+                                                                               "{{base_url}}"
+                                                                           ],
+                                                                  "path":  [
+                                                                               "books",
+                                                                               "{{book_id}}"
+                                                                           ]
+                                                              }
+                                                  },
+                                      "event":  [
+                                                    {
+                                                        "listen":  "test",
+                                                        "script":  {
+                                                                       "type":  "text/javascript",
+                                                                       "exec":  [
+                                                                                    "pm.test(\"200 OK\", () =\u003e pm.response.to.have.status(200));",
+                                                                                    "pm.test(\"expected fields\", () =\u003e pm.expect(pm.response.json()).to.have.all.keys(\"id\", \"title\", \"author\", \"year\", \"isbn\"));"
+                                                                                ]
+                                                                   }
+                                                    }
+                                                ]
+                                  },
+                                  {
+                                      "name":  "PUT /books/{id} — replace",
+                                      "request":  {
+                                                      "method":  "PUT",
+                                                      "header":  [
+                                                                     {
+                                                                         "key":  "Content-Type",
+                                                                         "value":  "application/json"
+                                                                     }
+                                                                 ],
+                                                      "url":  {
+                                                                  "raw":  "{{base_url}}/books/{{book_id}}",
+                                                                  "host":  [
+                                                                               "{{base_url}}"
+                                                                           ],
+                                                                  "path":  [
+                                                                               "books",
+                                                                               "{{book_id}}"
+                                                                           ]
+                                                              },
+                                                      "body":  {
+                                                                   "mode":  "raw",
+                                                                   "raw":  "{\"title\": \"DDIA revised\", \"author\": \"Kleppmann\", \"year\": 2017}",
+                                                                   "options":  {
+                                                                                   "raw":  {
+                                                                                               "language":  "json"
+                                                                                           }
+                                                                               }
+                                                               }
+                                                  },
+                                      "event":  [
+                                                    {
+                                                        "listen":  "test",
+                                                        "script":  {
+                                                                       "type":  "text/javascript",
+                                                                       "exec":  [
+                                                                                    "pm.test(\"200 OK\", () =\u003e pm.response.to.have.status(200));",
+                                                                                    "pm.test(\"updated title\", () =\u003e pm.expect(pm.response.json().title).to.eql(\"DDIA revised\"));"
+                                                                                ]
+                                                                   }
+                                                    }
+                                                ]
+                                  },
+                                  {
+                                      "name":  "DELETE /books/{id} — delete",
+                                      "request":  {
+                                                      "method":  "DELETE",
+                                                      "header":  [
+
+                                                                 ],
+                                                      "url":  {
+                                                                  "raw":  "{{base_url}}/books/{{book_id}}",
+                                                                  "host":  [
+                                                                               "{{base_url}}"
+                                                                           ],
+                                                                  "path":  [
+                                                                               "books",
+                                                                               "{{book_id}}"
+                                                                           ]
+                                                              }
+                                                  },
+                                      "event":  [
+                                                    {
+                                                        "listen":  "test",
+                                                        "script":  {
+                                                                       "type":  "text/javascript",
+                                                                       "exec":  [
+                                                                                    "pm.test(\"204 No Content\", () =\u003e pm.response.to.have.status(204));",
+                                                                                    "pm.test(\"empty body\", () =\u003e pm.expect(pm.response.text()).to.eql(\"\"));"
+                                                                                ]
+                                                                   }
+                                                    }
+                                                ]
+                                  }
+                              ]
+                 },
+                 {
+                     "name":  "error-cases",
+                     "item":  [
+                                  {
+                                      "name":  "POST /books - missing title",
+                                      "request":  {
+                                                      "method":  "POST",
+                                                      "header":  [
+                                                                     {
+                                                                         "key":  "Content-Type",
+                                                                         "value":  "application/json"
+                                                                     }
+                                                                 ],
+                                                      "url":  "{{base_url}}/books",
+                                                      "body":  {
+                                                                   "mode":  "raw",
+                                                                   "raw":  "{\"author\":\"Kleppmann\",\"year\":2017}",
+                                                                   "options":  {
+                                                                                   "raw":  {
+                                                                                               "language":  "json"
+                                                                                           }
+                                                                               }
+                                                               }
+                                                  },
+                                      "event":  [
+                                                    {
+                                                        "listen":  "test",
+                                                        "script":  {
+                                                                       "type":  "text/javascript",
+                                                                       "exec":  [
+                                                                                    "pm.test(\u0027Status is 400\u0027, () =\u003e pm.response.to.have.status(400));",
+                                                                                    "pm.test(\u0027Validation error body\u0027, () =\u003e { const b = pm.response.json(); pm.expect(b.code).to.eql(\u0027VALIDATION_ERROR\u0027); pm.expect(b.message).to.eql(\u0027Invalid book data\u0027); pm.expect(b.errors.map(e =\u003e e.field)).to.include(\u0027title\u0027); });"
+                                                                                ]
+                                                                   }
+                                                    }
+                                                ]
+                                  },
+                                  {
+                                      "name":  "GET /books/9999 - not found",
+                                      "request":  {
+                                                      "method":  "GET",
+                                                      "header":  [
+
+                                                                 ],
+                                                      "url":  "{{base_url}}/books/9999"
+                                                  },
+                                      "event":  [
+                                                    {
+                                                        "listen":  "test",
+                                                        "script":  {
+                                                                       "type":  "text/javascript",
+                                                                       "exec":  [
+                                                                                    "pm.test(\u0027Status is 404\u0027, () =\u003e pm.response.to.have.status(404));",
+                                                                                    "pm.test(\u0027Not found body\u0027, () =\u003e { const b = pm.response.json(); pm.expect(b.code).to.eql(\u0027NOT_FOUND\u0027); pm.expect(b.message).to.eql(\u0027Book not found\u0027); });"
+                                                                                ]
+                                                                   }
+                                                    }
+                                                ]
+                                  }
+                              ]
+                 }
+             ],
+    "variable":  [
+                     {
+                         "key":  "book_id",
+                         "value":  ""
+                     }
+                 ]
 }
