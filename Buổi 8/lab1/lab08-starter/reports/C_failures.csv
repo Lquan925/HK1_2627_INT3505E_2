@@ -1,0 +1,2 @@
+Method,Name,Error,Occurrences,First Seen,Last Seen
+GET,GET /books?year,CatchResponseError('Simulated HTTP 500 (client-side)'),7,2026-11-17T07:43:16Z,2026-11-17T07:43:37Z
