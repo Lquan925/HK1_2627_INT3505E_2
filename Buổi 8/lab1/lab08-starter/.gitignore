@@ -1,0 +1,14 @@
+# Local Python environment and caches
+.venv/
+__pycache__/
+.pytest_cache/
+*.pyc
+
+# Local databases and load-test logs
+instance/*.db
+reports/*.db
+reports/*-server.log
+reports/*-locust.log
+
+# Submission archives are not needed for GitHub
+Lab4-submission.zip
